@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 from django.core.cache import cache
 
@@ -5,19 +7,26 @@ from woocommerce import API
 
 import os
 
+logger = logging.getLogger(__name__)
+
 CACHING_TIMEOUT = 10 * 60
 
 def get_wc_api_client():
-    return API(
-        url=os.environ.get('WC_API_URL'),
-        consumer_key=os.environ.get('WC_API_CONSUMER_KEY'),
-        consumer_secret=os.environ.get('WC_API_CONSUMER_SECRET'),
-        version="wc/v3",
-    )
+    try:
+        return API(
+            url=os.environ.get('WC_API_URL'),
+            consumer_key=os.environ.get('WC_API_CONSUMER_KEY'),
+            consumer_secret=os.environ.get('WC_API_CONSUMER_SECRET'),
+            version="wc/v3",
+        )
+    except Exception as exc:
+        logger.exception("Something went wrong: %s", exc)
 
 
 
 def get_orders(client):
+    if client is None:
+        return []
     # https://woocommerce.github.io/woocommerce-rest-api-docs/?python#list-all-orders
     # cache.delete('wc_orders')
     if cache.get('wc_orders') is not None:

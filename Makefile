@@ -6,3 +6,6 @@ run:
 
 superuser:
 	python manage.py createsuperuser
+
+install:
+	pip install -r requirements.txt
