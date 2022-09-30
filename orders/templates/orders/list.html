@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+
+<body>
+    <h1>Orders</h1>
+    <div class="orders">
+        <table>
+            <tr>
+                <th>Pedido #</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Creado</th>
+                <th>Modificado</th>
+                <th>Estado</th>
+
+            </tr>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.billing.first_name }} {{ order.billing.last_name }}</td>
+                <td>{{ order.currency }} $ {{ order.total }}</td>
+                <td>{{ order.date_created }}</td>
+                <td>{{ order.date_modified }}</td>
+                <td>{{ order.status }}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+</body>
+</html>
