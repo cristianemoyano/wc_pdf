@@ -13,8 +13,9 @@ CACHING_TIMEOUT = 10 * 60
 
 def get_wc_api_client():
     try:
+        logger.info("Connecting: %s", os.getenv("WC_API_URL"))
         return API(
-            url=os.environ.get('WC_API_URL'),
+            url=os.environ.get("WC_API_URL"),
             consumer_key=os.environ.get('WC_API_CONSUMER_KEY'),
             consumer_secret=os.environ.get('WC_API_CONSUMER_SECRET'),
             version="wc/v3",
