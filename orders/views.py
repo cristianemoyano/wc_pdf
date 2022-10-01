@@ -42,3 +42,13 @@ def order_pdf(request, order_id):
     HTML(string=html).write_pdf(response, font_config=font_config)
 
     return response
+
+
+def order_detail(request, order_id):
+    client = wc_utils.get_wc_api_client()
+    order = wc_utils.get_order(client, order_id)
+
+    context = {
+        'order': order,
+    }
+    return render(request, 'orders/detail.html', context)

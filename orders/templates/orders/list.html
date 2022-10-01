@@ -61,6 +61,7 @@
                         url = `http://cmoyano.pythonanywhere.com/orders/${row.id}/pdf`;
                         text = `Hola ${row.billing.first_name}! \n En el siguiente link puedes descargar tu pedido: ${url} \n Gracias por tu compra en Jugaso.com`;
                         let buttons = '<div class="btn-group" role="group" aria-label="Basic example">'
+                        buttons += "<a class='btn btn-secondary btn-md' href='/orders/" + row.id + "/detail' target='_blank'>Imprimir</a>";
                         buttons += "<a class='btn btn-dark btn-md' href='/orders/" + row.id + "/pdf' target='_blank'>Generar PDF</a>";
                         buttons += `<a class='btn btn-md btn-success' href='whatsapp://send?text=${text}' data-action='share/whatsapp/share'>Compartir via Whatsapp</a>`;
                         buttons += '</div>'

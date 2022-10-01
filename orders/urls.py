@@ -11,4 +11,9 @@ urlpatterns = [
         views.order_pdf,
         name="order_pdf",
     ),
+    path(
+        'orders/<int:order_id>/detail',
+        views.order_detail,
+        name="order_detail",
+    ),
 ]

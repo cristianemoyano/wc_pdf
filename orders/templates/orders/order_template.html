@@ -1,0 +1,105 @@
+<div class="pedido text-center">
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>Remito</td>
+                <td>Pedido #{{ order.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="leyenda text-center">
+    <span>
+        [X] Documento No Válido como factura
+    </span>
+</div>
+
+
+<div class="membrete">
+    <table class="table">
+        <tbody>
+            <tr>
+                <td rowspan="6" style="vertical-align : middle;text-align:center;">
+                    <img width="100" height="77" src="https://jugaso.com/wp-content/uploads/2022/06/cropped-logo.png"
+                        class="custom-logo" alt="jugaso.com">
+                </td>
+                <td><span>Razón Social:</span></td>
+                <td><span>JUGASO</span></td>
+                <td rowspan="6"><span>Fecha: {% now "d/m/Y" %}</span></td>
+            </tr>
+            <tr>
+                <td><span>CUIT</span>:</td>
+                <td><span>20-27754528-5</span></td>
+            </tr>
+            <tr>
+                <td>WEB:</td>
+                <td><span>www.jugaso.com</span></td>
+            </tr>
+            <tr>
+                <td><span>Dirección</span></td>
+                <td><span>Carril Godoy Cruz 7737</span></td>
+            </tr>
+            <tr>
+                <td>Localidad:</td>
+                <td><span>Guaymallén, Mendoza</span></td>
+            </tr>
+            <tr>
+                <td><span>Teléfono:</span></td>
+                <td><span>2616686052</span></td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+<div class="cliente">
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <td><span>Nombre: {{ order.billing.first_name }} {{ order.billing.last_name }}</span></td>
+                <td><span>Domicilio: {{ order.billing.address_1 }}</span></td>
+            </tr>
+            <tr>
+                <td><span>Empresa: {{ order.billing.company }}</span></td>
+                <td><span>Localidad: {{ order.billing.city }}</span></td>
+            </tr>
+            <tr>
+                <td><span>Teléfono: {{ order.billing.phone}}</span></td>
+                <td><span>Provincia: {{ order.billing.state }}</span></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><span>CP: {{ order.billing.postcode }}</span></td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+<div class="items">
+    <table id="data_table" class="table table-striped table-hover text-center">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Precio Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.line_items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td class="text-start">{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>$ {{ item.price }}</td>
+                <td>$ {{ item.total }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4"><div class="text-end" style="font-size: 15px;">Total</div></td>
+                <td style="font-size: 15px; line-height: 10px;">$ {{ order.total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

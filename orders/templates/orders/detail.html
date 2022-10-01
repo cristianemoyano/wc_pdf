@@ -1,3 +1,4 @@
+
 {% extends "base_pdf.html" %}
 {% load static %}
 
@@ -8,5 +9,9 @@
 {% include 'orders/order_template.html' %}
 <!-- order -->
 
+<script>
+    window.print();
+</script>
 
 {% endblock %}
+
