@@ -1,11 +1,15 @@
+import logging
+
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
+from weasyprint import HTML
+from weasyprint.text.fonts import FontConfiguration
 
 from orders import wc_utils
 
-from weasyprint import HTML
-from weasyprint.text.fonts import FontConfiguration
+
+logger = logging.getLogger(__name__)
 
 
 def order_list(request):
@@ -14,7 +18,11 @@ def order_list(request):
 
 def order_list_json(request):
     client = wc_utils.get_wc_api_client()
-    data = wc_utils.get_orders(client)
+    try:
+        data = wc_utils.get_orders(client)
+    except Exception as exc:
+        logger.exception("Something went wrong: %s", exc)
+        data = []
     return JsonResponse(data, safe=False)
 
 
