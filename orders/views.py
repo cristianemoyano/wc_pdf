@@ -3,6 +3,7 @@ import logging
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_http_methods
 from weasyprint import HTML
 from weasyprint.text.fonts import FontConfiguration
 
@@ -25,6 +26,10 @@ def order_list_json(request):
         data = []
     return JsonResponse(data, safe=False)
 
+@require_http_methods(["POST"])
+def reset_order_cache(request):
+    wc_utils.reset_cache()
+    return JsonResponse({"response": 200}, safe=False)
 
 def order_pdf(request, order_id):
     client = wc_utils.get_wc_api_client()

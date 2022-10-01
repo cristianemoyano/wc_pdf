@@ -9,6 +9,10 @@ logger = logging.getLogger(__name__)
 
 CACHING_TIMEOUT = 10 * 60
 
+def reset_cache():
+    cache.clear()
+
+
 def get_wc_api_client():
     try:
         logger.info("Connecting: %s", os.getenv("WC_API_URL"))
@@ -27,7 +31,6 @@ def get_orders(client):
     if client is None:
         return []
     # https://woocommerce.github.io/woocommerce-rest-api-docs/?python#list-all-orders
-    # cache.delete('wc_orders')
     if cache.get('wc_orders') is not None:
         return cache.get('wc_orders')
     orders = client.get("orders/?lang=es&per_page=10").json()
