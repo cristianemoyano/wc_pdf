@@ -1,42 +1,36 @@
-import logging
-
 from django.shortcuts import render
-from django.core.cache import cache
+from django.http import JsonResponse, HttpResponse
+from django.template.loader import render_to_string
 
-from woocommerce import API
+from orders import wc_utils
 
-import os
+from weasyprint import HTML
+from weasyprint.text.fonts import FontConfiguration
 
-logger = logging.getLogger(__name__)
-
-CACHING_TIMEOUT = 10 * 60
-
-def get_wc_api_client():
-    try:
-        logger.info("Connecting: %s", os.getenv("WC_API_URL"))
-        return API(
-            url=os.environ.get("WC_API_URL"),
-            consumer_key=os.environ.get('WC_API_CONSUMER_KEY'),
-            consumer_secret=os.environ.get('WC_API_CONSUMER_SECRET'),
-            version="wc/v3",
-        )
-    except Exception as exc:
-        logger.exception("Something went wrong: %s", exc)
-
-
-
-def get_orders(client):
-    if client is None:
-        return []
-    # https://woocommerce.github.io/woocommerce-rest-api-docs/?python#list-all-orders
-    # cache.delete('wc_orders')
-    if cache.get('wc_orders') is not None:
-        return cache.get('wc_orders')
-    orders = client.get("orders/?lang=es&per_page=10").json()
-    cache.set('wc_orders', orders, CACHING_TIMEOUT)
-    return orders
 
 def order_list(request):
-    client = get_wc_api_client()
-    orders = get_orders(client)
-    return render(request, 'orders/list.html', {'orders': orders})
+    return render(request, 'orders/list.html', {'orders': []})
+
+
+def order_list_json(request):
+    client = wc_utils.get_wc_api_client()
+    data = wc_utils.get_orders(client)
+    return JsonResponse(data, safe=False)
+
+
+def order_pdf(request, order_id):
+    client = wc_utils.get_wc_api_client()
+    order = wc_utils.get_order(client, order_id)
+
+    context = {
+        'order': order,
+    }
+    html = render_to_string("orders/pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; report.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
