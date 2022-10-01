@@ -39,8 +39,8 @@ def get_order(client, order_id):
         return []
     # https://woocommerce.github.io/woocommerce-rest-api-docs/?python#list-all-orders
     # cache.delete('wc_orders')
-    if cache.get('wc_order') is not None:
-        return cache.get('wc_order')
+    if cache.get(f'wc_order_{order_id}') is not None:
+        return cache.get(f'wc_order_{order_id}')
     order = client.get(f"orders/{order_id}").json()
-    cache.set('wc_order', order, CACHING_TIMEOUT)
+    cache.set(f'wc_order_{order_id}', order, CACHING_TIMEOUT)
     return order

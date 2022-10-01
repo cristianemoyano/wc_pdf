@@ -57,8 +57,10 @@
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
+                        url = `http://cmoyano.pythonanywhere.com/orders/${row.id}/pdf`;
+                        text = `Hola ${row.billing.first_name}! \n En el siguiente link puedes descargar tu pedido: ${url} \n Gracias por tu compra en Jugaso.com`;
                         let buttons = "<a class='btn btn-dark btn-sm' href='/orders/" + row.id + "/pdf' target='_blank'>Generar PDF</a>";
-                        // buttons += "<a class='btn btn-danger btn-sm' href='/orders/" + row.id + "'></a>";
+                        buttons += `<a class='btn btn-success btn-sm' href='whatsapp://send?text=${text}' data-action='share/whatsapp/share'>Compartir via Whatsapp</a>`;
                         // buttons += "<a class='btn btn-primary btn-sm' href='/orders/" + row.id + "'><i class='fas fa-eye'></i></a>";
                         return buttons;
                     },
