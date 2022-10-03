@@ -26,6 +26,10 @@ def get_wc_api_client():
         logger.exception("Something went wrong: %s", exc)
 
 
+def search_orders(client, search):
+    if search is None:
+        return get_orders(client)
+    return client.get(f"orders/?lang=es&per_page=10&search={search}").json()
 
 def get_orders(client):
     if client is None:

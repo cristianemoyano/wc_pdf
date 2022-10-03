@@ -5,31 +5,107 @@
 {% block content %}
 <h1>Pedidos</h1>
 
-<button class="btn btn-info text-white" id="reset-cache">Borrar cache</button>
 
-<div class="orders table-responsive">
-    <table id="data_table" class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Pedido #</th>
-                <th>Cliente</th>
-                <th>Empresa</th>
-                <th>Total</th>
-                <th>Creado</th>
-                <th>Modificado</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+            role="tab" aria-controls="home" aria-selected="true">Inicio</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
+            role="tab" aria-controls="profile" aria-selected="false">Búsqueda avanzada</button>
+    </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <!-- Tabla inicio -->
+        
+        <div class="mt-4 mb-4">
+            <h3>Últimos 10 pedidos</h3>
+            <button class="btn btn-danger text-white" id="reset-cache">Borrar cache</button>
+            <hr>
+
+            <div class="orders table-responsive">
+                <table id="data_table" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Pedido #</th>
+                            <th>Cliente</th>
+                            <th>Empresa</th>
+                            <th>Total</th>
+                            <th>Creado</th>
+                            <th>Modificado</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Tabla inicio -->
+    </div>
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <!-- busqueda avanzada -->
+        {% include 'search.html' %}
+        <!-- busqueda avanzada -->
+    </div>
 </div>
+
+
+
+
 {% endblock %}
 
 {% block javascript %}
 
 <script type="text/javascript">
+    function get_actions(order) {
+        url = `http://cmoyano.pythonanywhere.com/orders/${order.id}/pdf`;
+        text = `Hola ${order.billing.first_name}! \n En el siguiente link puedes descargar tu pedido: ${url} \n Gracias por tu compra en Jugaso.com`;
+        let buttons = '<div class="btn-group" role="group" aria-label="Basic example">'
+        buttons += "<a class='btn btn-secondary btn-md' href='/orders/" + order.id + "/detail' target='_blank'>Imprimir</a>";
+        buttons += "<a class='btn btn-dark btn-md' href='/orders/" + order.id + "/pdf' target='_blank'>Generar PDF</a>";
+        buttons += `<a class='btn btn-md btn-success' href='whatsapp://send?text=${text}' data-action='share/whatsapp/share'>Compartir via Whatsapp</a>`;
+        buttons += '</div>'
+        return buttons;
+    }
+
+    function get_status(order) {
+        let status = '';
+        switch (order.status) {
+            case 'on-hold':
+                status = 'En espera';
+                classTxt = 'bg-warning';
+                break;
+            case 'completed':
+                status = 'Completado';
+                classTxt = 'bg-primary';
+                break;
+            case 'pending':
+                status = 'Pendiente de pago';
+                classTxt = 'bg-danger';
+                break;
+            case 'processing':
+                status = 'Procesando';
+                classTxt = 'bg-info';
+                break;
+            case 'canceled':
+                status = 'Cancelado';
+                classTxt = 'bg-dark';
+                break;
+            case 'refunded':
+                status = 'Reembolsado';
+                classTxt = 'bg-dark';
+                break;
+            default:
+                status = order.status;
+        }
+        return `<span class='badge ${classTxt} fs-6'>${status}</span>`;
+    }
+
+
     $(document).ready(function () {
         $('#data_table').DataTable({
             responsive: true,
@@ -60,14 +136,7 @@
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        url = `http://cmoyano.pythonanywhere.com/orders/${row.id}/pdf`;
-                        text = `Hola ${row.billing.first_name}! \n En el siguiente link puedes descargar tu pedido: ${url} \n Gracias por tu compra en Jugaso.com`;
-                        let buttons = '<div class="btn-group" role="group" aria-label="Basic example">'
-                        buttons += "<a class='btn btn-secondary btn-md' href='/orders/" + row.id + "/detail' target='_blank'>Imprimir</a>";
-                        buttons += "<a class='btn btn-dark btn-md' href='/orders/" + row.id + "/pdf' target='_blank'>Generar PDF</a>";
-                        buttons += `<a class='btn btn-md btn-success' href='whatsapp://send?text=${text}' data-action='share/whatsapp/share'>Compartir via Whatsapp</a>`;
-                        buttons += '</div>'
-                        return buttons;
+                        return get_actions(row);
                     },
                 },
                 {
@@ -75,36 +144,7 @@
                     class: 'text-center',
                     orderable: true,
                     render: function (data, type, row) {
-                        let status = '';
-                        switch (row.status) {
-                            case 'on-hold':
-                                status = 'En espera';
-                                classTxt = 'bg-warning';
-                                break;
-                            case 'completed':
-                                status = 'Completado';
-                                classTxt = 'bg-primary';
-                                break;
-                            case 'pending':
-                                status = 'Pendiente de pago';
-                                classTxt = 'bg-danger';
-                                break;
-                            case 'processing':
-                                status = 'Procesando';
-                                classTxt = 'bg-info';
-                                break;
-                            case 'canceled':
-                                status = 'Cancelado';
-                                classTxt = 'bg-dark';
-                                break;
-                            case 'refunded':
-                                status = 'Reembolsado';
-                                classTxt = 'bg-dark';
-                                break;
-                            default:
-                                status = row.status;
-                        }
-                        return `<span class='badge ${classTxt} fs-6'>${status}</span>`;
+                        return get_status(row);
                     },
                 },
                 {
@@ -128,7 +168,7 @@
                     class: 'text-center',
                     orderable: true,
                     render: function (data, type, row) {
-                        return `${row.billing.first_name} ${row.billing.last_name}`;
+                        return `${row.billing.first_name} ${row.billing.last_name} (${row.billing.email})`;
                     },
                 }
 
@@ -199,5 +239,68 @@
                 }
             });
     });
+
+    $("#adv-search").submit(function (event) {
+        event.preventDefault();
+        let query = $('#query').val();
+
+        $("#subtmitBtn").removeClass('btn-info').addClass('btn-secondary');
+        $("#subtmitBtn").prop('disabled', true);
+        $("#subtmitBtn").text('Cargando...');
+
+        $.ajax({
+            data: {
+                'q': query,
+            },
+            url: '/orders/search',
+            type: 'get',
+            error: function (data) { //error
+                alert("Error: " + data);
+            },
+            success: function (data) {
+                $("#subtmitBtn").prop('disabled', false);
+                $("#subtmitBtn").removeClass('btn-secondary').addClass('btn-info');
+                $("#subtmitBtn").text('Buscar');
+                let htmlString = `
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Pedido #</th>
+                    <th>Cliente</th>
+                    <th>Empresa</th>
+                    <th>Total</th>
+                    <th>Creado</th>
+                    <th>Modificado</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>`;
+                data.forEach(order => {
+                    let actions = get_actions(order);
+                    let status = get_status(order);
+                    htmlString += `
+                <tr>
+                    <td>${order.id}</td>
+                    <td>${order.billing.first_name} ${order.billing.last_name} (${order.billing.email})</td>
+                    <td>${order.billing.company}</td>
+                    <td><span class='fw-semibold'>$ ${order.total}</span></td>
+                    <td>${order.date_created}</td>
+                    <td>${order.date_modified}</td>
+                    <td>${status}</td>
+                    <td>${actions}</td>
+                </tr>
+            `;
+                });
+                htmlString += `</tbody></table>`;
+
+                $("#result").html(htmlString);
+
+            }
+        });
+
+    });
+
+
 </script>
 {% endblock javascript %}

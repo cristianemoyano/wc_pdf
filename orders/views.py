@@ -26,6 +26,16 @@ def order_list_json(request):
         data = []
     return JsonResponse(data, safe=False)
 
+def order_search(request):
+    client = wc_utils.get_wc_api_client()
+    query_search = request.GET.get("q")
+    try:
+        data = wc_utils.search_orders(client, query_search)
+    except Exception as exc:
+        logger.exception("Something went wrong: %s", exc)
+        data = []
+    return JsonResponse(data, safe=False)
+
 @require_http_methods(["POST"])
 def reset_order_cache(request):
     wc_utils.reset_cache()
