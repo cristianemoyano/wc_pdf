@@ -62,7 +62,8 @@
 
 <script type="text/javascript">
     function get_actions(order) {
-        url = `http://cmoyano.pythonanywhere.com/orders/${order.id}/pdf`;
+        domain = window.location.hostname;
+        url = `${domain}/orders/${order.id}/pdf`;
         text = `Hola ${order.billing.first_name}! \n En el siguiente link puedes descargar tu pedido: ${url} \n Gracias por tu compra en Jugaso.com`;
         let buttons = '<div class="btn-group" role="group" aria-label="Basic example">'
         buttons += "<a class='btn btn-secondary btn-md' href='/orders/" + order.id + "/detail' target='_blank'>Imprimir</a>";
