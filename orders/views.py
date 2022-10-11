@@ -6,17 +6,18 @@ from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from weasyprint import HTML
 from weasyprint.text.fonts import FontConfiguration
+from django.contrib.auth.decorators import login_required
 
 from orders import wc_utils
 
 
 logger = logging.getLogger(__name__)
 
-
+@login_required
 def order_list(request):
     return render(request, 'orders/list.html', {'orders': []})
 
-
+@login_required
 def order_list_json(request):
     client = wc_utils.get_wc_api_client()
     try:
@@ -26,6 +27,7 @@ def order_list_json(request):
         data = []
     return JsonResponse(data, safe=False)
 
+@login_required
 def order_search(request):
     client = wc_utils.get_wc_api_client()
     query_search = request.GET.get("q")
@@ -37,6 +39,7 @@ def order_search(request):
     return JsonResponse(data, safe=False)
 
 @require_http_methods(["POST"])
+@login_required
 def reset_order_cache(request):
     wc_utils.reset_cache()
     return JsonResponse({"response": 200}, safe=False)

@@ -16,10 +16,25 @@
 </head>
 
 <body>
+
     <div class="container">
-    {% block content %}
-    {% endblock content %}
-</div>
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-light bg-light justify-content-between">
+            <a class="navbar-brand">Remitos</a>
+
+            <span class="mr-sm-2 ">
+                {% if user.is_authenticated %}
+                Hola, <b>{{ user.username }} </b><a class="btn btn-danger" href="{% url 'logout' %}">Cerrar Sesión</a>
+                {% endif %}
+            </span>
+            
+        </nav>
+        <!-- END NAVBAR -->
+
+
+        {% block content %}
+        {% endblock content %}
+    </div>
 
 
     <!-- SCRIPTS -->

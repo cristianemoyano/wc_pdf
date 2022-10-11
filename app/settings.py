@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # internals
     'orders.apps.OrdersConfig',
+    'users.apps.UsersConfig',
     # third parties
     'rest_framework',
 ]
@@ -145,7 +146,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-Es'
 
 TIME_ZONE = 'UTC'
 
@@ -179,3 +180,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login'
