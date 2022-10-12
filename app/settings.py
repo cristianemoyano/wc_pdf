@@ -64,6 +64,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ['.ngrok.io', '127.0.0.1', '.pythonanywhere.com']
+CSRF_TRUSTED_ORIGINS = ['https://*.sa.ngrok.io']
 
 
 # Application definition
