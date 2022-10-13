@@ -101,6 +101,7 @@
                 break;
             default:
                 status = order.status;
+                classTxt = 'bg-warning';
         }
         return `<span class='badge ${classTxt} fs-6'>${status}</span>`;
     }
