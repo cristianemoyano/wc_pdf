@@ -29,7 +29,7 @@ def get_wc_api_client():
 def search_orders(client, search):
     if search is None:
         return get_orders(client)
-    return client.get(f"orders/?lang=es&per_page=10&search={search}").json()
+    return client.get(f"orders/?search={search}").json()
 
 def get_orders(client):
     if client is None:
@@ -37,7 +37,7 @@ def get_orders(client):
     # https://woocommerce.github.io/woocommerce-rest-api-docs/?python#list-all-orders
     if cache.get('wc_orders') is not None:
         return cache.get('wc_orders')
-    orders = client.get("orders/?lang=es&per_page=10").json()
+    orders = client.get("orders").json()
     cache.set('wc_orders', orders, CACHING_TIMEOUT)
     return orders
 
